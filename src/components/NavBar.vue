@@ -21,7 +21,10 @@
       </button>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-      <RouterLink v-for="item in RouterLink" :key="item.name" :to="{ path: item.href }" class="text-sm font-semibold leading-6 text-gray-900">{{ item.name }}</RouterLink>
+      <RouterLink to="/" class="text-sm font-semibold leading-6 text-gray-900">Home</RouterLink>
+      <RouterLink to="/meal" class="text-sm font-semibold leading-6 text-gray-900">One Meal</RouterLink>
+      <RouterLink to="/day" class="text-sm font-semibold leading-6 text-gray-900">One Day</RouterLink>
+      <RouterLink to="/week" class="text-sm font-semibold leading-6 text-gray-900">One Week</RouterLink>
     </div>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
       <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
