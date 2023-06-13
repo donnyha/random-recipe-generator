@@ -32,7 +32,7 @@
   </nav>
 
   <!-- Mobile Nav -->
-  <!-- <div class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
+  <div class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
     <div class="fixed inset-0 z-50" />
     <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
       <div class="flex items-center justify-between">
@@ -48,7 +48,10 @@
       <div class="mt-6 flow-root">
         <div class="-my-6 divide-y divide-gray-500/10">
           <div class="space-y-2 py-6">
-            <a v-for="item in navigation" :key="item.name" :href="item.href" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">{{ item.name }}</a>
+            <RouterLink to="/" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Home</RouterLink>
+            <RouterLink to="/meal" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">One Meal</RouterLink>
+            <RouterLink to="/day" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">One Day</RouterLink>
+            <RouterLink to="/week" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">One Week</RouterLink>
           </div>
           <div class="py-6">
             <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
@@ -56,5 +59,5 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
