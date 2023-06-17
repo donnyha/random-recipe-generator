@@ -1,16 +1,12 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { RouterLink } from 'vue-router'
+  import type Route from '../types/Route'
   import { BoltIcon } from '@heroicons/vue/24/outline'
   import { Bars3Icon } from '@heroicons/vue/24/outline'
   import { XMarkIcon } from '@heroicons/vue/24/outline'
 
   const mobileMenuOpen = ref(false)
-  
-  interface Route {
-    name: string;
-    path: string;
-  }
 
   const navigationRoutes: Route[] = [
     { name: 'home', path: '/' },
