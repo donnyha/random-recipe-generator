@@ -1,11 +1,23 @@
 <script setup lang="ts">
-  import { RouterLink } from 'vue-router'
   import { ref } from 'vue'
+  import { RouterLink } from 'vue-router'
   import { BoltIcon } from '@heroicons/vue/24/outline'
   import { Bars3Icon } from '@heroicons/vue/24/outline'
   import { XMarkIcon } from '@heroicons/vue/24/outline'
 
   const mobileMenuOpen = ref(false)
+  
+  interface Route {
+    name: string;
+    path: string;
+  }
+
+  const navigationRoutes: Route[] = [
+    { name: 'home', path: '/' },
+    { name: 'meal', path: '/meal' },
+    { name: 'day', path: '/day' },
+    { name: 'week', path: '/week' }
+  ]
 </script>
 
 <template>
@@ -24,10 +36,7 @@
       </button>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-      <RouterLink to="/" class="text-sm font-semibold leading-6 text-gray-900">Home</RouterLink>
-      <RouterLink to="/meal" class="text-sm font-semibold leading-6 text-gray-900">One Meal</RouterLink>
-      <RouterLink to="/day" class="text-sm font-semibold leading-6 text-gray-900">One Day</RouterLink>
-      <RouterLink to="/week" class="text-sm font-semibold leading-6 text-gray-900">One Week</RouterLink>
+      <RouterLink v-for="(route, index) in navigationRoutes" :key="index" :to="{ name: route.name }" class="text-sm font-semibold leading-6 text-gray-900">{{ route.name }}</RouterLink>
     </div>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
       <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
@@ -50,11 +59,8 @@
       </div>
       <div class="mt-6 flow-root">
         <div class="-my-6 divide-y divide-gray-500/10">
-          <div class="space-y-2 py-6">
-            <RouterLink to="/" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Home</RouterLink>
-            <RouterLink to="/meal" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">One Meal</RouterLink>
-            <RouterLink to="/day" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">One Day</RouterLink>
-            <RouterLink to="/week" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">One Week</RouterLink>
+          <div class="space-y-2 py-6">          
+            <RouterLink v-for="(route, index) in navigationRoutes" :key="index" :to="{ name: route.name }" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">{{ route.name }}</RouterLink>
           </div>
           <div class="py-6">
             <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
