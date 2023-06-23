@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/week',
       name: 'week',
       component: WeekView
-    },
+    }
   ]
 })
 
