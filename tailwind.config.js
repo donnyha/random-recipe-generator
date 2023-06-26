@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import forms from '@tailwindcss/forms';
+
 module.exports = {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   content: [
@@ -8,6 +10,8 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    forms
+  ],
 }
 
