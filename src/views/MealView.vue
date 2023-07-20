@@ -1,13 +1,17 @@
 <script setup lang="ts">
   import { ref, type Ref, isProxy, toRaw } from 'vue'
   import axios, { type AxiosRequestConfig } from 'axios'
+  import type Recipe from '../types/Recipe';
+  import { CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 
   let ingredients: Ref<string[]> = ref([])
   let isIngredientsEmpty: Ref<boolean> = ref(true)
   let newIngredientInput: Ref<string> = ref('')
   let isRecipesEmpty: Ref<boolean> = ref(true)
+  let beingUsedIngredients: Ref<string> = ref('')
   let recipes: Ref<any[]> = ref([])
-  let selectedRecipe: Ref<object> = ref({})
+  let selectedRecipe: Ref<Recipe | any> = ref({})
+  let selectedRecipeInstructions: Ref<string[] | any[]> = ref([])
 
 
   const addIngredient: (ingredient: string) => void = (ingredient: string) => {
@@ -66,8 +70,17 @@
     .catch((error: Error) => {
       console.log(error)
     })
+    .finally(() => {
+      beingUsedIngredients.value = rawIngredients.join(',') 
+      resetSelectedRecipe()
+    })
 
     return recipes
+  }
+
+  const resetSelectedRecipe: () => void = () => {
+    selectedRecipe.value = {}
+    selectedRecipeInstructions.value = []
   }
 
   const checkForProxyAndReturnRaw:(itemToCheck: any) => any = (itemToCheck: any) => {
@@ -80,9 +93,14 @@
     return raw
   }
 
-  const showRecipeInformation: (recipe: object) => void = (recipe: object) => {
+  const showRecipeInformation: (recipe: Recipe) => void = (recipe: Recipe) => {
+    const selectedRecipeId = recipe.id
     selectedRecipe.value = recipe
-    console.log(selectedRecipe.value);
+    // get recipe instructions with recipe id
+      // make axios GET call with recipe id to get instructions
+      // url = https://api.spoonacular.com/recipes/${id}/analyzedInstructions
+      // for each instructions
+      // put each step into selectedRecipeInstructions
   }
 </script>
 
@@ -90,7 +108,9 @@
   <form>
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
-        <h2 class="text-base font-semibold leading-7 text-gray-900">Recipes</h2>
+        <h2 class="text-base font-semibold leading-7 text-gray-900">
+          Recipes<span v-if="beingUsedIngredients.length > 0"> with {{ beingUsedIngredients }}</span> 
+        </h2>
 
         <!-- @TODO Refactor to separate component  -->
         <div v-if="isRecipesEmpty">
@@ -107,17 +127,38 @@
               </li>
             </ul>
           </div>
-          
-          <div>
-            <h3>Information</h3>
-            <!-- <div v-show="typeof selectedRecipe !== null">
-              <h4>Title: {{ selectedRecipe.title }}</h4>
-              <p>Missed Ingredients</p>
-              <ul v-for="(index, missedIngredient) in selectedRecipe.missedIngredients" :key="index">
-                <li>{{ missedIngredient.originalName }} ({{ missedIngredient.amount }} {{ missedIngredient.unit }})</li>
-              </ul>
-            </div> -->
 
+          <div v-if="Object.keys(selectedRecipe).length > 0">
+            <h3>Information</h3>
+            <div>
+              <h4>Name: {{ selectedRecipe.title }}</h4>
+              <p>Ingredients</p>
+
+              <!-- Existing Ingredients-->
+              <div v-if="Object.keys(selectedRecipe.usedIngredients).length > 0">
+                <ul v-for="(requiredIngredients, index) in selectedRecipe.usedIngredients" :key="index">
+                  <li class="flex flex-row">{{ requiredIngredients.original }} <CheckCircleIcon class="h-6 w-auto stroke-green-400" /></li>
+                </ul>
+              </div>
+
+              <!-- Missing Ingredients -->
+              <div v-if="Object.keys(selectedRecipe.missedIngredients).length > 0">
+                <ul v-for="(missedIngredient, index) in selectedRecipe.missedIngredients" :key="index">
+                  <li class="flex flex-row">
+                    <p class="text-gray-400 line-through">{{ missedIngredient.original }}</p> <XCircleIcon class="h-6 w-auto stroke-red-400" /></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div v-if="selectedRecipeInstructions.length > 0">
+              <h4>Instructions</h4>
+              <ol>
+                <li v-for="(instruction, index) in selectedRecipeInstructions" :key="index">
+                  {{ instruction }}
+                </li>
+              </ol>
+            </div>
           </div>
         </div>
 
