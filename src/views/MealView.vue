@@ -11,7 +11,7 @@
   let beingUsedIngredients: Ref<string> = ref('')
   let recipes: Ref<any[]> = ref([])
   let selectedRecipe: Ref<Recipe | any> = ref({})
-  let selectedRecipeInstructions: Ref<string[] | any[]> = ref([])
+  let selectedRecipeInstructions: Ref<object[] | any[]> = ref([])
 
 
   const addIngredient: (ingredient: string) => void = (ingredient: string) => {
@@ -55,8 +55,8 @@
   // @TODO refactor to different component
   const getRecipesBasedOnIngredients: (ingredientsToSend: string[]) => Promise<object[] | any[]> = async (ingredientsToSend: string[]) => {
     let recipes: any[] = []
-    const rawIngredients = checkForProxyAndReturnRaw(ingredientsToSend);
-    const url = 'https://api.spoonacular.com/recipes/findByIngredients'
+    const rawIngredients: any = checkForProxyAndReturnRaw(ingredientsToSend);
+    const url: string = 'https://api.spoonacular.com/recipes/findByIngredients'
 
     await axios.get(url, {
       params: {
@@ -78,6 +78,26 @@
     return recipes
   }
 
+  const getRecipeInstructionsWithRecipeId: (selectedRecipeId: number) => Promise<object[] | any[]> = async (selectedRecipeId: number) => {
+    const url: string = `https://api.spoonacular.com/recipes/${selectedRecipeId}/analyzedInstructions`
+    let instructions: string[] = []
+    
+    await axios.get(url, {
+      params: {
+        apiKey: 'c9f2fb75c57145fd9ad43da15f293379'
+      }
+    })
+    .then((response: AxiosRequestConfig) => {
+      console.log(response.data)
+      instructions = response.data[0].steps
+    })
+    .catch((error: Error) => {
+      console.log(error)
+    })
+
+    return instructions
+  }
+
   const resetSelectedRecipe: () => void = () => {
     selectedRecipe.value = {}
     selectedRecipeInstructions.value = []
@@ -93,14 +113,10 @@
     return raw
   }
 
-  const showRecipeInformation: (recipe: Recipe) => void = (recipe: Recipe) => {
+  const showRecipeInformation: (recipe: Recipe) => void = async (recipe: Recipe) => {
     const selectedRecipeId = recipe.id
     selectedRecipe.value = recipe
-    // get recipe instructions with recipe id
-      // make axios GET call with recipe id to get instructions
-      // url = https://api.spoonacular.com/recipes/${id}/analyzedInstructions
-      // for each instructions
-      // put each step into selectedRecipeInstructions
+    selectedRecipeInstructions.value = await getRecipeInstructionsWithRecipeId(selectedRecipeId)
   }
 </script>
 
@@ -108,17 +124,44 @@
   <form>
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
-        <h2 class="text-base font-semibold leading-7 text-gray-900">
-          Recipes<span v-if="beingUsedIngredients.length > 0"> with {{ beingUsedIngredients }}</span> 
-        </h2>
+
+        <h1>Meal</h1>
+
+        <!-- Ingredient List -->
+        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div class="sm:col-span-4">
+            <label for="user-ingredients" class="block text-sm font-medium leading-6 text-gray-900">Ingredients</label>
+            <div class="mt-2">
+              <div v-if="!isIngredientsEmpty" class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <div>
+                  <ul>
+                    <li v-for="(ingredient, index) in ingredients" :key="index" >
+                      <input type="text" name="ingredient-{{ index }}" :value="ingredient" readonly />
+                      <button type="button" id="delete-btn-{{ index }}" @click="removeIngredient(index)">-</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div v-else>Empty</div>
+
+              <div class="flex flex-row">
+                <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                  <input type="text" v-model="newIngredientInput" id="new-ingredient" name="new-ingredient" placeholder="e.g. tomato" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                </div>
+                <button type="button" @click="addIngredient(newIngredientInput)" class="ml-2 btn">Add</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
 
         <!-- @TODO Refactor to separate component  -->
-        <div v-if="isRecipesEmpty">
-          <p class="mt-1 text-sm leading-6 text-gray-600">Please click 'Generate' Button to generate a random recipe</p>
-        </div>
-        <div v-else class="flex flex-row">
+        <div v-if="!isRecipesEmpty" class="flex flex-row">
+          <!-- Recipe List -->
           <div>
-            <h3>Recipes</h3>
+            <h2 class="text-base font-semibold leading-7 text-gray-900">
+              Recipes<span v-if="beingUsedIngredients.length > 0"> with {{ beingUsedIngredients }}</span> 
+            </h2>
             <ul v-for="(recipe, index) in recipes" :key="index">
               <li>
                 <button type="button" @click="showRecipeInformation(recipe)">
@@ -129,9 +172,9 @@
           </div>
 
           <div v-if="Object.keys(selectedRecipe).length > 0">
-            <h3>Information</h3>
+            <h2>Information</h2>
             <div>
-              <h4>Name: {{ selectedRecipe.title }}</h4>
+              <h3>Name: {{ selectedRecipe.title }}</h3>
               <p>Ingredients</p>
 
               <!-- Existing Ingredients-->
@@ -152,39 +195,12 @@
 
             <!-- Instructions -->
             <div v-if="selectedRecipeInstructions.length > 0">
-              <h4>Instructions</h4>
-              <ol>
+              <h3>Instructions</h3>
+              <ul>
                 <li v-for="(instruction, index) in selectedRecipeInstructions" :key="index">
-                  {{ instruction }}
+                  {{ instruction.number }}. {{ instruction.step }}
                 </li>
-              </ol>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-          <div class="sm:col-span-4">
-            <label for="user-ingredients" class="block text-sm font-medium leading-6 text-gray-900">Ingredients</label>
-            <div class="mt-2">
-              <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                <div v-if="!isIngredientsEmpty">
-                  <ul>
-                    <li v-for="(ingredient, index) in ingredients" :key="index" >
-                      <input type="text" name="ingredient-{{ index }}" :value="ingredient" readonly />
-                      <button type="button" id="delete-btn-{{ index }}" @click="removeIngredient(index)">-</button>
-                    </li>
-                  </ul>
-                </div>
-                <div v-else>Empty</div>
-              </div>
-
-              <div class="flex flex-row">
-                <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input type="text" v-model="newIngredientInput" id="new-ingredient" name="new-ingredient" placeholder="e.g. tomato" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                </div>
-                <button type="button" @click="addIngredient(newIngredientInput)" class="ml-2 btn">Add</button>
-              </div>
-
+              </ul>
             </div>
           </div>
         </div>
