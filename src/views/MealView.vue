@@ -78,6 +78,7 @@
     return recipes
   }
 
+  // @TODO refactor to different component
   const getRecipeInstructionsWithRecipeId: (selectedRecipeId: number) => Promise<object[] | any[]> = async (selectedRecipeId: number) => {
     const url: string = `https://api.spoonacular.com/recipes/${selectedRecipeId}/analyzedInstructions`
     let instructions: string[] = []
@@ -123,40 +124,44 @@
 <template>
   <form>
     <div class="space-y-12">
-      <div class="border-b border-gray-900/10 pb-12">
+      <div class="flex flex-col">
 
-        <h1>Meal</h1>
+        <div id="page-title" class="flex items-center justify-center h-full">
+          <h1 class="text-xl font-bold tracking-tight text-gray-900 sm:text-5xl">Meal</h1>
+        </div>
 
-        <!-- Ingredient List -->
-        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-          <div class="sm:col-span-4">
-            <label for="user-ingredients" class="block text-sm font-medium leading-6 text-gray-900">Ingredients</label>
-            <div class="mt-2">
+        <!-- Ingredients -->
+        <div id="ingredients-section" class="flex items-center justify-center h-full m-10">
+          <div class="flex flex-row sm:col-span-4 mt-2">
+
+            <!-- Ingredients List -->
+            <div id="ingredients-list-section">
+              <label for="user-ingredients" class="block text-sm font-medium leading-6 text-gray-900">Ingredients</label>
               <div v-if="!isIngredientsEmpty" class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                <div>
-                  <ul>
-                    <li v-for="(ingredient, index) in ingredients" :key="index" >
-                      <input type="text" name="ingredient-{{ index }}" :value="ingredient" readonly />
-                      <button type="button" id="delete-btn-{{ index }}" @click="removeIngredient(index)">-</button>
-                    </li>
-                  </ul>
-                </div>
+                <ul>
+                  <li v-for="(ingredient, index) in ingredients" :key="index" >
+                    <input type="text" name="ingredient-{{ index }}" :value="ingredient" readonly />
+                    <button type="button" id="delete-btn-{{ index }}" @click="removeIngredient(index)">-</button>
+                  </li>
+                </ul>
               </div>
-              <div v-else>Empty</div>
-
-              <div class="flex flex-row">
-                <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input type="text" v-model="newIngredientInput" id="new-ingredient" name="new-ingredient" placeholder="e.g. tomato" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                </div>
-                <button type="button" @click="addIngredient(newIngredientInput)" class="ml-2 btn">Add</button>
-              </div>
-
+              <div v-else>No Ingredients</div>
             </div>
+            
+            <!-- New Ingredient Input -->
+            <div id="new-ingredients-section" class="flex flex-row">
+              <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <input type="text" v-model="newIngredientInput" id="new-ingredient" name="new-ingredient" placeholder="e.g. tomato" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+              </div>
+              <button type="button" @click="addIngredient(newIngredientInput)" class="ml-2 btn">Add</button>
+            </div>
+
           </div>
         </div>
 
         <!-- @TODO Refactor to separate component  -->
-        <div v-if="!isRecipesEmpty" class="flex flex-row">
+        <!-- Recipes -->
+        <div id="recipes-section" v-if="!isRecipesEmpty" class="flex flex-row">
           <!-- Recipe List -->
           <div>
             <h2 class="text-base font-semibold leading-7 text-gray-900">
@@ -171,6 +176,7 @@
             </ul>
           </div>
 
+          <!-- Selected Recipe Information -->
           <div v-if="Object.keys(selectedRecipe).length > 0">
             <h2>Information</h2>
             <div>
@@ -204,11 +210,13 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="mt-6 flex items-center justify-end gap-x-6">
-      <button type="button" @click="generateRecipes()" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate</button>
+        <!-- Generate Button -->
+        <div class="flex items-center justify-center h-full">
+          <button id="generate-button" type="button" @click="generateRecipes()" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate</button>
+        </div>
+
+      </div>
     </div>
   </form>
 </template>
