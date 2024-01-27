@@ -132,10 +132,10 @@
 
         <!-- Ingredients -->
         <div id="ingredients-section" class="flex items-center justify-center h-full m-10">
-          <div class="flex flex-row sm:col-span-4 mt-2">
+          <div class="flex flex-row sm:col-span-4 mt-2 parent">
 
             <!-- Ingredients List -->
-            <div id="ingredients-list-section">
+            <div id="ingredients-list-section child">
               <label for="user-ingredients" class="block text-sm font-medium leading-6 text-gray-900">Ingredients</label>
               <div v-if="!isIngredientsEmpty" class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                 <ul>
@@ -150,10 +150,10 @@
             
             <!-- New Ingredient Input -->
             <div id="new-ingredients-section" class="flex flex-row">
-              <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                <input type="text" v-model="newIngredientInput" id="new-ingredient" name="new-ingredient" placeholder="e.g. tomato" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+              <div class="rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md max-h-8">
+                <input type="text" v-model="newIngredientInput" id="new-ingredient" name="new-ingredient" placeholder="e.g. tomato" class="block border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 w-32 h-8 overflow-hidden" />
               </div>
-              <button type="button" @click="addIngredient(newIngredientInput)" class="ml-2 btn">Add</button>
+              <button type="button" @click="addIngredient(newIngredientInput)" class="max-h-8 ml-2 btn">Add</button>
             </div>
 
           </div>
@@ -161,15 +161,15 @@
 
         <!-- @TODO Refactor to separate component  -->
         <!-- Recipes -->
-        <div id="recipes-section" v-if="!isRecipesEmpty" class="flex flex-row">
+        <div id="recipes-section" v-if="!isRecipesEmpty" class="flex flex-row mx-40">
           <!-- Recipe List -->
-          <div>
+          <div id="recipe-list" class="mr-10 w-1/3">
             <h2 class="text-base font-semibold leading-7 text-gray-900">
               Recipes<span v-if="beingUsedIngredients.length > 0"> with {{ beingUsedIngredients }}</span> 
             </h2>
             <ul v-for="(recipe, index) in recipes" :key="index">
-              <li>
-                <button type="button" @click="showRecipeInformation(recipe)">
+              <li class="mb-3">
+                <button type="button" @click="showRecipeInformation(recipe)" class="text-left">
                   {{ recipe.title }}
                 </button>
               </li>
@@ -177,10 +177,10 @@
           </div>
 
           <!-- Selected Recipe Information -->
-          <div v-if="Object.keys(selectedRecipe).length > 0">
+          <div id="recipe-info" v-if="Object.keys(selectedRecipe).length > 0" class="w-2/3">
             <h2>Information</h2>
             <div>
-              <h3>Name: {{ selectedRecipe.title }}</h3>
+              <h3 class="mb-2">Name: {{ selectedRecipe.title }}</h3>
               <p>Ingredients</p>
 
               <!-- Existing Ingredients-->
@@ -191,7 +191,7 @@
               </div>
 
               <!-- Missing Ingredients -->
-              <div v-if="Object.keys(selectedRecipe.missedIngredients).length > 0">
+              <div v-if="Object.keys(selectedRecipe.missedIngredients).length > 0" class="mb-2">
                 <ul v-for="(missedIngredient, index) in selectedRecipe.missedIngredients" :key="index">
                   <li class="flex flex-row">
                     <p class="text-gray-400 line-through">{{ missedIngredient.original }}</p> <XCircleIcon class="h-6 w-auto stroke-red-400" /></li>
