@@ -1,52 +1,57 @@
-# random-food-generator
+# Random Recipe Generator
 
-This template should help get you started developing with Vue 3 in Vite.
+Random Recipe Generator is a web application that helps users discover new recipes by providing random recipe suggestions.
 
-## Recommended IDE Setup
+## Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- **Discover Recipes**: Get random recipe suggestions for various cuisines and meal types.
+- **Filter by Preferences**: Filter recipes based on dietary preferences, ingredients, and cooking time.
 
-## Type Support for `.vue` Imports in TS
+## Demo
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+You can try out the Random Recipe Generator by visiting the [live demo](<http://donnyha.com/projects/menu-decider/>).
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Installation
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+To run the Random Recipe Generator locally on your machine, follow these steps:
 
-## Customize configuration
+1. Clone the repository:
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+   ```bash
+   git clone https://github.com/donnyha/random-recipe-generator.git
+   ```
 
-## Project Setup
+2. Navigate to the project directory:
 
-```sh
-npm install
-```
+   ```bash
+   cd random-recipe-generator
+   ```
 
-### Compile and Hot-Reload for Development
+3. Install dependencies:
 
-```sh
-npm run dev
-```
+   ```bash
+   npm install
+   ```
 
-### Type-Check, Compile and Minify for Production
+4. Start the development server:
 
-```sh
-npm run build
-```
+   ```bash
+   npm start
+   ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+5. Open your web browser and visit [http://localhost:3000](http://localhost:3000) to view the application.
 
-```sh
-npm run test:unit
-```
+## Technologies Used
 
-### Lint with [ESLint](https://eslint.org/)
+- Vue.js
+- Spoonacular food API
+- HTML5
+- Tailwind CSS
 
-```sh
-npm run lint
-```
+## Contributing
+
+Contributions are welcome! If you find any bugs or have suggestions for new features, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
